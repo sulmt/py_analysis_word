@@ -335,10 +335,10 @@ class Application(tk.Frame):
             'west_fix': west_fix,
         }
         doc.render(context)
-        # test_path = self.save_path + "/" + data[0] + ".docx"
+        test_path = self.save_path + "/" + data[0] + ".docx"
         # 测试用
-        timestamp = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
-        test_path = os.path.dirname(__file__) + "/" + timestamp + data[0] + ".docx"
+        # timestamp = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+        # test_path = os.path.dirname(__file__) + "/" + timestamp + data[0] + ".docx"
         doc.save(test_path)
 
         # reread
