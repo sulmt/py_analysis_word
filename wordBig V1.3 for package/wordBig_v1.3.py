@@ -7,13 +7,13 @@ import xlrd
 import time
 import os
 import threading
-from docx import Document
 from tkinter import ttk
 from docx.shared import Pt
 from tkinter import filedialog
 from tkinter import messagebox
 from docxtpl import DocxTemplate
 from PIL import Image, ImageTk
+from docx.oxml.ns import qn
 
 
 # 定义Application类表示应用/窗口，继承Frame类
@@ -33,8 +33,7 @@ class Application(tk.Frame):
         # self.quitButton = tk.Button(self, text='Quit', command=self.quit)
         # 显示按钮，并使用grid布局
         # self.quitButton.grid()
-        print(os.path.dirname(__file__))
-        load = Image.open(os.path.dirname(__file__) + '/face.jpg')
+        load = Image.open(r'face.jpg')
         render = ImageTk.PhotoImage(load)
 
         img = tk.Label(image=render)
@@ -175,14 +174,14 @@ class Application(tk.Frame):
     # 将表格数据填入word
     def docxtpl_test(self, execl_data, data):
         # 初始赋值
-        east = '自由图边。检查者：' + data[7]
-        south = '自由图边。检查者：' + data[7]
-        west = '自由图边。检查者：' + data[7]
-        north = '自由图边。检查者：' + data[7]
-        east_no = '自由图边'
-        south_no = '自由图边'
-        west_no = '自由图边'
-        north_no = '自由图边'
+        east = '自由接边。检查者：' + data[7]
+        south = '自由接边。检查者：' + data[7]
+        west = '自由接边。检查者：' + data[7]
+        north = '自由接边。检查者：' + data[7]
+        east_no = '自由接边'
+        south_no = '自由接边'
+        west_no = '自由接边'
+        north_no = '自由接边'
         east_status = ''
         south_status = ''
         west_status = ''
@@ -203,7 +202,6 @@ class Application(tk.Frame):
             northNo = head + '%03d' % (int(x)-1) + y
             southNo = head + '%03d' % (int(x)+1) + y
         except Exception as err:
-            print(err)
             self.pbar.stop()
             return
 
@@ -237,10 +235,10 @@ class Application(tk.Frame):
         check2 = self.myfomart(data[27], data[28], 16)
         auth3 = self.myfomart(data[29], data[30], 16)
         check3 = self.myfomart(data[31], data[32], 16)
-        auth4 = self.myfomart(data[33], data[34], 16)
-        check4 = self.myfomart(data[35], data[36], 16)
-        auth5 = self.myfomart(data[37], data[38], 16)
-        check5 = self.myfomart(data[39], data[40], 16)
+        # auth4 = self.myfomart(data[33], data[34], 16)
+        # check4 = self.myfomart(data[35], data[36], 16)
+        # auth5 = self.myfomart(data[37], data[38], 16)
+        # check5 = self.myfomart(data[39], data[40], 16)
         method1 = self.myfomart2(data[41], 16)
         soft = self.myfomart3(data[42], 19)
         gs1 = self.myfomart3(data[43], 38)
@@ -260,7 +258,8 @@ class Application(tk.Frame):
         # print (len(method3))
         # print (len(gs2))
         # print (len(gs3))
-        doc = DocxTemplate(os.path.dirname(__file__) + './blank_pack_v2.docx')
+        # doc = DocxTemplate(os.path.dirname(__file__)+'./blank_pack_v2.docx')
+        doc = DocxTemplate(r'blank_pack_v2.docx')
         context = {
             'gxmc1': data[48],
             'zynr1': data[49],
@@ -304,10 +303,10 @@ class Application(tk.Frame):
             'check2': check2,
             'auth3': auth3,
             'check3': check3,
-            'auth4': auth4,
-            'check4': check4,
-            'auth5': auth5,
-            'check5': check5,
+            # 'auth4': auth4,
+            # 'check4': check4,
+            # 'auth5': auth5,
+            # 'check5': check5,
             'method1': method1,
             'method2': method2,
             'soft': soft,
@@ -319,15 +318,18 @@ class Application(tk.Frame):
             'south': south,
             'west': west,
             'north': north,
-            'east_no': east_no,
+            '东图幅': east_no,
+
             'south_no': south_no,
             'west_no': west_no,
             'north_no': north_no,
-            'east_status': east_status,
+            # 'east_status': east_status,
+            '东状态': east_status,
             'south_status': south_status,
             'west_status': west_status,
             'north_status': north_status,
-            'east_fix': east_fix,
+            # 'east_fix': east_fix,
+            '东固定': east_fix,
             'north_fix': north_fix,
             'south_fix': south_fix,
             'west_fix': west_fix,
@@ -338,19 +340,41 @@ class Application(tk.Frame):
         timestamp = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
         test_path = os.path.dirname(__file__) + "/" + timestamp + data[0] + ".docx"
         doc.save(test_path)
+
         # reread
+        # document = docx.Document(test_path)
+        # tables = document.tables
+        # homeTable = tables[0]
+        # homeTable.style.font.name = u'微软雅黑'
+        # nameOfLocal = self.entry.get()
+        # run = homeTable.cell(2, 0).paragraphs[0].add_run(nameOfLocal)
+        # run.font.name = u'微软雅黑'
+        # print(len(nameOfLocal))
+        # if len(nameOfLocal) > 15:
+        #     run.font.size = Pt(10.5)
+        # else:
+        #     run.font.size = Pt(15)
+        # document.save(test_path)
+        font_name = u'微软雅黑'
         document = docx.Document(test_path)
         tables = document.tables
         homeTable = tables[0]
-        homeTable.style.font.name = u'微软雅黑'
+
+        # homeTable.style.font.name = u'微软雅黑'
         nameOfLocal = self.entry.get()
         run = homeTable.cell(2, 0).paragraphs[0].add_run(nameOfLocal)
-        run.font.name = u'微软雅黑'
-        print(len(nameOfLocal))
+        # print (run.font.size)
         if len(nameOfLocal) > 15:
             run.font.size = Pt(10.5)
         else:
             run.font.size = Pt(15)
+
+        # print (run.font.size)
+        run.font.name = font_name
+        # solve only character
+        r = run._element
+
+        r.rPr.rFonts.set(qn('w:eastAsia'), font_name)
         document.save(test_path)
 
         self.pbar.stop()
@@ -457,15 +481,16 @@ def docx_test():
                 run.font.name = u'宋体'
                 run.font.size = Pt(12)
     timestamp = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
-    test_path = "D:\工作\word操作\code_v2\code" + timestamp + ".docx"
+    test_path = os.path.dirname(__file__) + timestamp + ".docx"
     document.save(test_path)
 
 
 # 创建一个Application对象app
 app = Application()
 # 设置窗口标题为'First Tkinter'
-app.master.title = 'First Tkinter'
-# 测试用
-app.analysis_excel(os.path.dirname(__file__) + '/data.xlsx')
+app.master.title('First Tkinter')
+# 设置窗口的图标
+app.master.iconbitmap(os.path.dirname(__file__) + '/1.ico')
+# app.analysis_excel(os.path.dirname(__file__) + '/data.xlsx')
 # 主循环开始
 app.mainloop()
