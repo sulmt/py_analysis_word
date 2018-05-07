@@ -7,7 +7,6 @@ import xlrd
 import time
 import os
 import threading
-import random
 from docx import Document
 from tkinter import ttk
 from docx.shared import Pt
@@ -163,14 +162,14 @@ class Application(tk.Frame):
                     value = str(int(value))
                 data.append(value)
             execl_data.append(data)
-        for row in execl_data:
-            self.thread2 = threading.Thread(
-                target=self.docxtpl_test, args=(execl_data, row,))
-            self.thread2.start()
+        # for row in execl_data:
+        #     self.thread2 = threading.Thread(
+        #         target=self.docxtpl_test, args=(execl_data, row,))
+        #     self.thread2.start()
         # 测试用
-        # self.thread2 = threading.Thread(
-        #     target=self.docxtpl_test, args=(execl_data, execl_data[0],))
-        # self.thread2.start()
+        self.thread2 = threading.Thread(
+            target=self.docxtpl_test, args=(execl_data, execl_data[0],))
+        self.thread2.start()
         return
 
     # 将表格数据填入word
@@ -180,10 +179,10 @@ class Application(tk.Frame):
         south = '自由图边。检查者：' + data[7]
         west = '自由图边。检查者：' + data[7]
         north = '自由图边。检查者：' + data[7]
-        east_no = ''
-        south_no = ''
-        west_no = ''
-        north_no = ''
+        east_no = '自由图边'
+        south_no = '自由图边'
+        west_no = '自由图边'
+        north_no = '自由图边'
         east_status = ''
         south_status = ''
         west_status = ''
@@ -198,10 +197,15 @@ class Application(tk.Frame):
         head = pictureNo[0:4]
         x = pictureNo[4:7]
         y = pictureNo[7:]
-        eastNo = head + x + '%03d' % (int(y)+1)
-        westNo = head + x + '%03d' % (int(y)-1)
-        northNo = head + '%03d' % (int(x)-1) + y
-        southNo = head + '%03d' % (int(x)+1) + y
+        try:
+            eastNo = head + x + '%03d' % (int(y)+1)
+            westNo = head + x + '%03d' % (int(y)-1)
+            northNo = head + '%03d' % (int(x)-1) + y
+            southNo = head + '%03d' % (int(x)+1) + y
+        except Exception as err:
+            print(err)
+            self.pbar.stop()
+            return
 
         # 查找图号并构造数据
         for row in execl_data:
@@ -329,25 +333,25 @@ class Application(tk.Frame):
             'west_fix': west_fix,
         }
         doc.render(context)
-        test_path = self.save_path + "/" + data[0] + ".docx"
+        # test_path = self.save_path + "/" + data[0] + ".docx"
         # 测试用
-        # timestamp = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
-        # test_path = os.path.dirname(__file__) + "/" + timestamp + data[0] + ".docx"
+        timestamp = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+        test_path = os.path.dirname(__file__) + "/" + timestamp + data[0] + ".docx"
         doc.save(test_path)
         # reread
-        # document = docx.Document(test_path)
-        # tables = document.tables
-        # homeTable = tables[0]
-        # homeTable.style.font.name = u'微软雅黑'
-        # nameOfLocal = self.entry.get()
-        # run = homeTable.cell(2, 0).paragraphs[0].add_run(nameOfLocal)
-        # run.font.name = u'微软雅黑'
-        # print(len(nameOfLocal))
-        # if len(nameOfLocal) > 15:
-        #     run.font.size = Pt(10.5)
-        # else:
-        #     run.font.size = Pt(15)
-        # document.save(test_path)
+        document = docx.Document(test_path)
+        tables = document.tables
+        homeTable = tables[0]
+        homeTable.style.font.name = u'微软雅黑'
+        nameOfLocal = self.entry.get()
+        run = homeTable.cell(2, 0).paragraphs[0].add_run(nameOfLocal)
+        run.font.name = u'微软雅黑'
+        print(len(nameOfLocal))
+        if len(nameOfLocal) > 15:
+            run.font.size = Pt(10.5)
+        else:
+            run.font.size = Pt(15)
+        document.save(test_path)
 
         self.pbar.stop()
         return
@@ -461,6 +465,7 @@ def docx_test():
 app = Application()
 # 设置窗口标题为'First Tkinter'
 app.master.title = 'First Tkinter'
+# 测试用
 app.analysis_excel(os.path.dirname(__file__) + '/data.xlsx')
 # 主循环开始
 app.mainloop()

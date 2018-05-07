@@ -112,7 +112,7 @@ class Application(tk.Frame):
             self.pbar.start()
             self.thread1 = threading.Thread(
                 target=self.analysis_excel, args=(self.excel_path, ))
-            self.thread1.setDaemon(True)
+            # self.thread1.setDaemon(True)
             self.thread1.start()
         else:
             messagebox.showerror(title='错误', message="您未选择任何路径")
@@ -354,16 +354,16 @@ class Application(tk.Frame):
         tables = document.tables
         homeTable = tables[0]
 
-        #   homeTable.style.font.name = u'微软雅黑'
+        # homeTable.style.font.name = u'微软雅黑'
         nameOfLocal = self.entry.get()
         run = homeTable.cell(2, 0).paragraphs[0].add_run(nameOfLocal)
-     #   print (run.font.size)
+        # print (run.font.size)
         if len(nameOfLocal) > 15:
             run.font.size = Pt(10.5)
         else:
             run.font.size = Pt(15)
 
-        print (run.font.size)
+        print(run.font.size)
         run.font.name = font_name
         # solve only character
         r = run._element
@@ -482,7 +482,9 @@ def docx_test():
 # 创建一个Application对象app
 app = Application()
 # 设置窗口标题为'First Tkinter'
-app.master.title = 'First Tkinter'
-#app.analysis_excel(os.path.dirname(__file__) + '/data.xlsx')
+app.master.title('First Tkinter')
+# 设置窗口的图标
+app.master.iconbitmap(os.path.dirname(__file__) + '/1.ico')
+# app.analysis_excel(os.path.dirname(__file__) + '/data.xlsx')
 # 主循环开始
 app.mainloop()
