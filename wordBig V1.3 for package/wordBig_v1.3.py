@@ -33,7 +33,8 @@ class Application(tk.Frame):
         # self.quitButton = tk.Button(self, text='Quit', command=self.quit)
         # 显示按钮，并使用grid布局
         # self.quitButton.grid()
-        load = Image.open(r'face.jpg')
+        # load = Image.open(os.path.dirname(__file__)+'/face.jpg')
+        load = Image.open(r'/face.jpg')
         render = ImageTk.PhotoImage(load)
 
         img = tk.Label(image=render)
@@ -161,14 +162,14 @@ class Application(tk.Frame):
                     value = str(int(value))
                 data.append(value)
             execl_data.append(data)
-        # for row in execl_data:
-        #     self.thread2 = threading.Thread(
-        #         target=self.docxtpl_test, args=(execl_data, row,))
-        #     self.thread2.start()
+        for row in execl_data:
+            self.thread2 = threading.Thread(
+                target=self.docxtpl_test, args=(execl_data, row,))
+            self.thread2.start()
         # 测试用
-        self.thread2 = threading.Thread(
-            target=self.docxtpl_test, args=(execl_data, execl_data[0],))
-        self.thread2.start()
+        # self.thread2 = threading.Thread(
+        #     target=self.docxtpl_test, args=(execl_data, execl_data[0],))
+        # self.thread2.start()
         return
 
     # 将表格数据填入word
@@ -190,7 +191,7 @@ class Application(tk.Frame):
         south_fix = ''
         west_fix = ''
         north_fix = ''
-
+        print(data)
         # 生成目标图号
         pictureNo = data[0]
         head = pictureNo[0:4]
@@ -208,27 +209,28 @@ class Application(tk.Frame):
         # 查找图号并构造数据
         for row in execl_data:
             if (row[0] == eastNo):
+                print(row)
+                print(row[5])
                 east_no = eastNo
-                east = '已与' + east_no + '图幅接边。 接边者：' + row[6] + '   检查者：' + row[6]
+                east = '已与' + east_no + '图幅接边。 接边者：' + row[6] + '   检查者：' + row[7]
                 east_fix = '地物 0.1-1.0mm'
-                east_status = '地貌 2-5m' + (17-len(row[6])*2)*' ' + '接边者：' + row[6]
+                east_status = '地貌 2-5m' + (17-len(row[29])*2)*' ' + '接边者：' + row[29]
             if (row[0] == northNo):
                 north_no = northNo
-                north = '已与' + north_no + '图幅接边。 接边者：' + data[6] + '   检查者：' + row[6]
+                north = '已与' + north_no + '图幅接边。 接边者：' + data[6] + '   检查者：' + row[7]
                 north_fix = '地物 0.1-1.0mm'
-                north_status = '地貌 2-5m' + (17-len(data[6])*2)*' ' + '接边者：' + data[6]
+                north_status = '地貌 2-5m' + (17-len(data[29])*2)*' ' + '接边者：' + data[29]
             if (row[0] == westNo):
                 west_no = westNo
-                west = '已与' + west_no + '图幅接边。 接边者：' + data[6] + '   检查者：' + row[6]
+                west = '已与' + west_no + '图幅接边。 接边者：' + data[6] + '   检查者：' + row[7]
                 west_fix = '地物 0.1-1.0mm'
-                west_status = '地貌 2-5m' + (17-len(data[6])*2)*' ' + '接边者：' + data[6]
+                west_status = '地貌 2-5m' + (17-len(data[29])*2)*' ' + '接边者：' + data[29]
             if (row[0] == southNo):
                 south_no = southNo
-                south = '已于' + south_no + '图幅接边。 接边者：' + row[6] + '   检查者：' + row[6]
+                south = '已于' + south_no + '图幅接边。 接边者：' + row[6] + '   检查者：' + row[7]
                 south_fix = '地物 0.1-1.0mm'
-                south_status = '地貌 2-5m' + (17-len(row[6])*2)*' ' + '接边者：' + row[6]
+                south_status = '地貌 2-5m' + (17-len(row[29])*2)*' ' + '接边者：' + row[29]
 
-        # print(data)
         # print(len(data))
         # newtime1 = self.myfomart2(data[24],12)
         auth2 = self.myfomart(data[25], data[26], 16)
@@ -318,18 +320,18 @@ class Application(tk.Frame):
             'south': south,
             'west': west,
             'north': north,
-            '东图幅': east_no,
+            'east_no': east_no,
 
             'south_no': south_no,
             'west_no': west_no,
             'north_no': north_no,
             # 'east_status': east_status,
-            '东状态': east_status,
+            'east_status': east_status,
             'south_status': south_status,
             'west_status': west_status,
             'north_status': north_status,
             # 'east_fix': east_fix,
-            '东固定': east_fix,
+            'east_fix': east_fix,
             'north_fix': north_fix,
             'south_fix': south_fix,
             'west_fix': west_fix,
